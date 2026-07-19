@@ -1,0 +1,173 @@
+import { useEffect, useRef } from 'react'
+import { Link } from 'react-router-dom'
+import gsap from 'gsap'
+import arqoLogo from '../../../assets/arqo-logo-cropped.png'
+import { useMagnetic } from '../../../hooks/useMagnetic'
+import { prefersReducedMotion } from '../../../utils/dom'
+
+const NAV = [
+  { label: 'Home', to: '/' },
+  { label: 'About', to: '/about' },
+  { label: 'Services', to: '/services' },
+  { label: 'Projects', to: '/projects' },
+  { label: 'Contact', to: '/contact' },
+]
+
+function HeroCallout({ label, to }: { label: string; to: string }) {
+  const ref = useMagnetic<HTMLAnchorElement>({ strength: 0.28, scale: 1.04 })
+  return (
+    <Link
+      ref={ref}
+      to={to}
+      data-hero-btn
+      data-cursor="hover"
+      className="group relative inline-flex items-center px-1 py-1 text-[10px] tracking-[0.24em] text-[rgb(var(--muted))] transition-colors duration-300 hover:text-[rgb(var(--text))] md:text-[11px]"
+    >
+      <span className="relative">
+        {label.toUpperCase()}
+        <span className="absolute -bottom-1.5 left-1/2 h-px w-0 -translate-x-1/2 bg-[rgb(var(--accent))] transition-all duration-500 group-hover:w-full" />
+      </span>
+    </Link>
+  )
+}
+
+export function HomeHero() {
+  const sectionRef = useRef<HTMLElement | null>(null)
+  const logoRef = useRef<HTMLImageElement | null>(null)
+  const lineRef = useRef<HTMLDivElement | null>(null)
+  const scrollRef = useRef<HTMLDivElement | null>(null)
+
+  useEffect(() => {
+    const el = sectionRef.current
+    if (!el) return
+
+    if (prefersReducedMotion()) {
+      gsap.set(
+        [logoRef.current, lineRef.current, scrollRef.current, '[data-hero-btn]'],
+        { opacity: 1, y: 0, scaleX: 1, clipPath: 'inset(0% 0% 0% 0%)' },
+      )
+      return
+    }
+
+    const buttons = el.querySelectorAll('[data-hero-btn]')
+
+    gsap.set(logoRef.current, {
+      filter: 'blur(14px)',
+      scale: 0.6,
+      y: 26,
+      opacity: 0,
+      rotateX: 12,
+    })
+    gsap.set(lineRef.current, { scaleX: 0, opacity: 0 })
+    gsap.set(buttons, { y: 22, opacity: 0 })
+    gsap.set(scrollRef.current, { opacity: 0, y: 10 })
+
+    const tl = gsap.timeline({ delay: 0.15, defaults: { ease: 'power3.out' } })
+    tl.to(
+        logoRef.current,
+        {
+          filter: 'blur(0px)',
+          scale: 1,
+          y: 0,
+          opacity: 0.92,
+          rotateX: 0,
+          duration: 1.6,
+          ease: 'power4.out',
+        },
+        '-=0.35',
+      )
+      .to(lineRef.current, { scaleX: 1, opacity: 1, duration: 1.1 }, '-=0.9')
+      .to(buttons, { y: 0, opacity: 1, duration: 0.85, stagger: 0.08 }, '-=0.6')
+      .to(scrollRef.current, { opacity: 1, y: 0, duration: 0.8 }, '-=0.3')
+      .add(() => {
+        // Gentle continuous float once it has settled.
+        gsap.to(logoRef.current, {
+          y: -10,
+          duration: 3,
+          ease: 'sine.inOut',
+          repeat: -1,
+          yoyo: true,
+        })
+      })
+
+    // Subtle mouse parallax on the logo (premium, alive feel).
+    const onMove = (e: PointerEvent) => {
+      const nx = (e.clientX / window.innerWidth - 0.5) * 2
+      const ny = (e.clientY / window.innerHeight - 0.5) * 2
+      gsap.to(logoRef.current, {
+        rotateY: nx * 6,
+        rotateX: -ny * 5,
+        duration: 0.9,
+        ease: 'power2.out',
+        overwrite: 'auto',
+      })
+    }
+    window.addEventListener('pointermove', onMove)
+
+    return () => {
+      tl.kill()
+      window.removeEventListener('pointermove', onMove)
+      gsap.killTweensOf(logoRef.current)
+    }
+  }, [])
+
+  return (
+    <section
+      ref={sectionRef}
+      className="relative flex min-h-[100svh] flex-col items-center justify-center px-6"
+    >
+      <div className="pointer-events-none absolute inset-0">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_32%,rgb(var(--glow)/0.16),transparent_55%),radial-gradient(circle_at_20%_80%,rgb(var(--accent2)/0.12),transparent_55%),radial-gradient(circle_at_80%_75%,rgb(var(--accent)/0.10),transparent_55%)]" />
+        <div className="absolute inset-0 opacity-[0.12] [mask-image:radial-gradient(circle_at_50%_42%,black,transparent_72%)]">
+          <div className="absolute inset-0 bg-[linear-gradient(to_right,rgb(var(--text)/0.12)_1px,transparent_1px),linear-gradient(to_bottom,rgb(var(--text)/0.10)_1px,transparent_1px)] [background-size:72px_72px]" />
+        </div>
+      </div>
+
+      <div
+        className="relative z-10"
+        style={{ perspective: '900px' }}
+      >
+        <img
+          ref={logoRef}
+          src={arqoLogo}
+          alt="ARQO Design Collective"
+          className="h-auto w-[min(68vw,420px)] object-contain will-change-transform"
+          style={{
+            filter: 'drop-shadow(0 16px 40px rgba(0, 0, 0, 0.16))',
+            transformStyle: 'preserve-3d',
+          }}
+          draggable={false}
+        />
+      </div>
+
+      <div
+        ref={lineRef}
+        className="relative z-10 mt-10 h-px w-[min(70vw,480px)] origin-center bg-[linear-gradient(90deg,transparent,rgb(var(--accent)/0.65),rgb(var(--glow)/0.65),rgb(var(--accent2)/0.65),transparent)]"
+      />
+
+      <nav className="relative z-10 mt-9 flex flex-wrap items-center justify-center gap-4 md:gap-6">
+        {NAV.map((n, i) => (
+          <div key={n.label} className="flex items-center gap-4 md:gap-6">
+            {i > 0 && (
+              <span
+                data-hero-btn
+                className="h-4 w-px bg-[linear-gradient(180deg,transparent,rgb(var(--text)/0.4),transparent)] md:h-5"
+              />
+            )}
+            <HeroCallout label={n.label} to={n.to} />
+          </div>
+        ))}
+      </nav>
+
+      <div
+        ref={scrollRef}
+        className="absolute bottom-10 left-1/2 z-10 flex -translate-x-1/2 flex-col items-center gap-3"
+      >
+        <span className="text-[10px] tracking-[0.38em] text-[rgb(var(--muted))]">
+          SCROLL TO EXPLORE
+        </span>
+        <div className="h-10 w-px bg-[linear-gradient(180deg,rgb(var(--accent)),transparent)]" />
+      </div>
+    </section>
+  )
+}

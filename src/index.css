@@ -1,0 +1,179 @@
+@import "tailwindcss";
+
+/* ---------------------------------------------
+   ARQO Design Collective — Theme Tokens (CSS vars)
+   --------------------------------------------- */
+
+:root {
+  --font-sans: "Century Gothic", "CenturyGothic", "Didact Gothic", "AppleGothic",
+    "Trebuchet MS", ui-sans-serif, sans-serif;
+  --font-display: "Century Gothic", "CenturyGothic", "Didact Gothic", "AppleGothic",
+    "Trebuchet MS", ui-sans-serif, sans-serif;
+
+  /* Typography scale — slightly refined / smaller */
+  --text-display: clamp(1.75rem, 3.5vw, 2.5rem);
+  --text-h1: clamp(2.25rem, 5vw, 3.5rem);
+  --text-h2: clamp(1.75rem, 3.5vw, 2.6rem);
+  --text-h3: clamp(1.125rem, 2vw, 1.5rem);
+  --text-body: 0.9375rem;
+  --text-body-lg: 1rem;
+
+  /* Brand palette (inspired by logo spec) */
+  --terracotta: 204 86 72;
+  --sand: 232 220 200;
+  --gold: 214 170 74;
+  --sage: 126 151 132;
+  --steel: 78 116 139;
+  --white: 255 255 255;
+  --charcoal: 14 14 16;
+
+  /* Motion */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-soft: cubic-bezier(0.2, 0.9, 0.2, 1);
+  --dur-1: 220ms;
+  --dur-2: 520ms;
+
+  /* Defaults (light) */
+  --bg: 255 255 255;
+  --bg2: 248 248 248;
+  --surface: 255 255 255;
+  --surface2: 252 251 248;
+  --text: 15 15 18;
+  --muted: 98 102 110;
+  --border: 0 0 0 / 0.10;
+  --shadow: 0 0 0 / 0.10;
+  --glass: 255 255 255 / 0.55;
+  --glow: 214 170 74;
+  --accent: 204 86 72;
+  --accent2: 78 116 139;
+
+  color-scheme: light;
+  font-family: var(--font-sans);
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html[data-theme="dark"] {
+  --bg: 14 14 16;
+  --bg2: 12 12 14;
+  --surface: 18 18 22;
+  --surface2: 22 22 28;
+  --text: 245 246 250;
+  --muted: 165 170 182;
+  --border: 255 255 255 / 0.10;
+  --shadow: 0 0 0 / 0.55;
+  --glass: 18 18 22 / 0.55;
+  --glow: 78 116 139;
+  --accent: 214 170 74;
+  --accent2: 78 116 139;
+  color-scheme: dark;
+}
+
+html[data-theme="relax"] {
+  --bg: 250 245 235;
+  --bg2: 241 232 216;
+  --surface: 255 252 246;
+  --surface2: 250 243 232;
+  --text: 22 18 16;
+  --muted: 108 92 84;
+  --border: 0 0 0 / 0.10;
+  --shadow: 0 0 0 / 0.14;
+  --glass: 255 252 246 / 0.50;
+  --glow: 204 86 72;
+  --accent: 204 86 72;
+  --accent2: 126 151 132;
+  color-scheme: light;
+}
+
+/* App base */
+html {
+  font-size: 100%; /* 16px base */
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: var(--text-body);
+  line-height: 1.6;
+  letter-spacing: 0.01em;
+  background: rgb(var(--bg));
+  color: rgb(var(--text));
+  overflow-x: hidden;
+  cursor: none; /* custom cursor */
+}
+
+#root {
+  min-height: 100svh;
+}
+
+/* Premium selection */
+::selection {
+  background: rgb(var(--accent) / 0.25);
+}
+
+/* Subtle grain (cheap, CSS-only) */
+.grain {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  opacity: 0.14;
+  mix-blend-mode: overlay;
+  background-image:
+    radial-gradient(circle at 20% 30%, rgb(255 255 255 / 0.10) 0 1px, transparent 2px),
+    radial-gradient(circle at 70% 60%, rgb(0 0 0 / 0.10) 0 1px, transparent 2px);
+  background-size: 140px 140px, 180px 180px;
+  filter: blur(0.2px);
+}
+
+/* Animated underline helper */
+.u-underline {
+  position: relative;
+}
+.u-underline::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -8px;
+  height: 1px;
+  width: 100%;
+  transform: scaleX(0);
+  transform-origin: left;
+  background: linear-gradient(90deg, rgb(var(--accent)), rgb(var(--glow)));
+  transition: transform var(--dur-2) var(--ease-out);
+  opacity: 0.9;
+}
+.u-underline:hover::after {
+  transform: scaleX(1);
+}
+
+/* Marquee animation */
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.marquee-track {
+  animation: marquee 28s linear infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track { animation: none; }
+}
+
+/* About page section divider */
+.section-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgb(var(--accent) / 0.35), rgb(var(--glow) / 0.35), transparent);
+  opacity: 0.5;
+}
+
+/* Hide cursor on touch devices */
+@media (hover: none) and (pointer: coarse) {
+  body {
+    cursor: auto;
+  }
+}
