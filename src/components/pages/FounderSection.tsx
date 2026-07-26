@@ -22,18 +22,26 @@ export function FounderSection() {
         THE FOUNDER
       </p>
 
-      {/* Cut-out portrait — transparent, blends with the page (no white box) */}
-      <div data-reveal className="flex flex-col gap-6 sm:flex-row sm:items-end sm:gap-10 md:gap-16">
-        <div className="relative w-full max-w-[260px] shrink-0 sm:max-w-[300px] md:max-w-[340px]">
+      {/* Shae-inspired: photo left, name/title right */}
+      <div data-reveal className="flex flex-col gap-8 sm:flex-row sm:items-end sm:gap-10 md:gap-16">
+        <div
+          className="relative aspect-[3/4] w-full max-w-[220px] shrink-0 overflow-hidden sm:max-w-[250px] md:max-w-[290px]"
+          style={{
+            // Top-left / bottom-left / bottom-right rounded; top-right sharp
+            borderRadius: '120px 8px 120px 120px',
+            // Dark fill so transparent photo areas blend (no white)
+            background: 'rgb(32, 30, 28)',
+            boxShadow: '0 0 0 1px rgb(var(--border)), 0 32px 80px rgb(var(--shadow))',
+          }}
+        >
           <img
             src={founderPhoto}
             alt={FOUNDER.name}
-            className="h-auto w-full object-contain"
-            style={{ filter: 'drop-shadow(0 24px 50px rgb(0 0 0 / 0.28))' }}
+            className="absolute inset-0 h-full w-full object-cover object-[center_12%]"
           />
         </div>
 
-        <div className="max-w-md pb-1 sm:pb-4 md:pb-8">
+        <div className="max-w-md pb-1 sm:pb-8 md:pb-14">
           <h2 className="font-[var(--font-display)] text-[clamp(1.9rem,4.5vw,3rem)] font-normal leading-[1.05] tracking-[-0.02em] text-[rgb(var(--text))]">
             {FOUNDER.name.toUpperCase()},
           </h2>
