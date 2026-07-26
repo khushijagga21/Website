@@ -1,5 +1,5 @@
 import { useScrollReveal } from '../../hooks/useScrollReveal'
-import founderPhoto from '../../assets/founder.png'
+import founderPhoto from '../../assets/founder.jpg'
 
 export const FOUNDER = {
   name: 'Khushank Kathuria',
@@ -29,15 +29,14 @@ export function FounderSection() {
           style={{
             // Top-left / bottom-left / bottom-right rounded; top-right sharp
             borderRadius: '120px 8px 120px 120px',
-            // Dark fill so transparent photo areas blend (no white)
-            background: 'rgb(32, 30, 28)',
             boxShadow: '0 0 0 1px rgb(var(--border)), 0 32px 80px rgb(var(--shadow))',
           }}
         >
+          {/* Photo is 3:4, same as the frame — shows in full, no cropping */}
           <img
             src={founderPhoto}
             alt={FOUNDER.name}
-            className="absolute inset-0 h-full w-full object-cover object-[center_12%]"
+            className="absolute inset-0 h-full w-full object-cover object-center"
           />
         </div>
 
