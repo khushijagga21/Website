@@ -15,6 +15,7 @@ export function useTilt3D<T extends HTMLElement>(opts: TiltOpts = {}) {
     const el = ref.current
     if (!el) return
     if (prefersReducedMotion()) return
+    if (window.matchMedia('(hover: none), (pointer: coarse)').matches) return
 
     const max = opts.max ?? 10
     const scale = opts.scale ?? 1.02

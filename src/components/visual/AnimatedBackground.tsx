@@ -7,6 +7,8 @@ export function AnimatedBackground() {
 
   useEffect(() => {
     if (prefersReducedMotion()) return
+    // Large animated blurred layers are expensive on mobile GPUs.
+    if (window.matchMedia('(max-width: 768px), (pointer: coarse)').matches) return
     const el = ref.current
     if (!el) return
 

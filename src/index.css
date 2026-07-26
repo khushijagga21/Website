@@ -171,3 +171,22 @@ body {
   background: linear-gradient(90deg, transparent, rgb(var(--accent) / 0.35), rgb(var(--glow) / 0.35), transparent);
   opacity: 0.5;
 }
+
+/* Mobile performance: avoid costly full-screen blur compositing while scrolling. */
+@media (max-width: 768px), (pointer: coarse) {
+  [data-layer="a"],
+  [data-layer="b"],
+  [data-layer="c"],
+  .grain {
+    display: none;
+  }
+
+  .backdrop-blur-xl {
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+  }
+
+  body {
+    transition-duration: 250ms;
+  }
+}

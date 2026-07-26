@@ -43,6 +43,14 @@ export function useScrollReveal<T extends HTMLElement>(opts: RevealOpts = {}) {
 
     const items = el.querySelectorAll('[data-reveal]')
     if (!items.length) return
+    // Avoid dozens of ScrollTriggers and blur/transform composites on phones.
+    if (window.matchMedia('(max-width: 768px), (pointer: coarse)').matches) {
+      gsap.set(items, {
+        clearProps: 'transform,opacity,filter,clipPath',
+        opacity: 1,
+      })
+      return
+    }
 
     const from = { ...VARIANTS[variant] }
     if (opts.y !== undefined && 'y' in from) from.y = opts.y
