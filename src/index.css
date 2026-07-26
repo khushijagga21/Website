@@ -106,6 +106,8 @@ body {
   color: rgb(var(--text));
   overflow-x: hidden;
   cursor: none; /* custom cursor */
+  /* Softens residual UI color shifts during theme tween */
+  transition: background-color 700ms var(--ease-soft), color 700ms var(--ease-soft);
 }
 
 #root {
