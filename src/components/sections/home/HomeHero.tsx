@@ -147,7 +147,7 @@ export function HomeHero() {
           className="mt-5 flex items-center gap-3 text-[11px] tracking-[0.36em] text-[rgb(var(--text))] md:mt-6 md:text-xs"
         >
           <span className="h-px w-8 bg-[rgb(var(--text)/0.35)] md:w-10" aria-hidden />
-          ARQO DESIGN COLLECTIVE
+          DESIGN COLLECTIVE
           <span className="h-px w-8 bg-[rgb(var(--text)/0.35)] md:w-10" aria-hidden />
         </p>
       </div>

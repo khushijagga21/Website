@@ -54,7 +54,7 @@ export function LogoMark({ compact = false }: LogoMarkProps) {
           compact ? 'text-[8px] sm:text-[9px]' : 'text-[9px] sm:text-[10px]',
         ].join(' ')}
       >
-        DESIGN COLLECTIVE
+        ARQO DESIGN COLLECTIVE
       </span>
     </Link>
   )
