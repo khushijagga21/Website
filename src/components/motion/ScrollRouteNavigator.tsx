@@ -38,10 +38,10 @@ export function ScrollRouteNavigator() {
 
       lockRef.current = true
       navigate(ORDER[nextIdx])
-      // Cooldown so a single wheel doesn't jump multiple routes
+      // Short cooldown — faster page-to-page switches
       window.setTimeout(() => {
         lockRef.current = false
-      }, 900)
+      }, 380)
     }
 
     const atBottom = () => {

@@ -1,27 +1,7 @@
-import { useEffect } from 'react'
-import Lenis from 'lenis'
-
+/**
+ * Native browser scrolling — Lenis smooth-scroll felt sluggish
+ * and slowed page-to-page navigation.
+ */
 export function SmoothScroll() {
-  useEffect(() => {
-    const lenis = new Lenis({
-      duration: 1.15,
-      easing: (t: number) => 1 - Math.pow(1 - t, 4),
-      smoothWheel: true,
-      wheelMultiplier: 0.95,
-    })
-
-    let raf = 0
-    const loop = (time: number) => {
-      lenis.raf(time)
-      raf = requestAnimationFrame(loop)
-    }
-    raf = requestAnimationFrame(loop)
-
-    return () => {
-      cancelAnimationFrame(raf)
-      lenis.destroy()
-    }
-  }, [])
-
   return null
 }

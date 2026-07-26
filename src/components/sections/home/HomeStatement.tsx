@@ -1,5 +1,10 @@
 import { PhilosophyContent } from '../../pages/PhilosophyContent'
 
 export function HomeStatement() {
-  return <PhilosophyContent />
+  return (
+    <div data-nav-section="about">
+      <PhilosophyContent />
+    </div>
+  )
 }
+

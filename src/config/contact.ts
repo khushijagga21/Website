@@ -18,11 +18,23 @@ export const CONTACT = {
   location: 'Hisar, Zirakpur, India',
 }
 
+function isMobileDevice() {
+  if (typeof navigator === 'undefined') return false
+  return /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent)
+}
+
 export const contactLinks = {
-  whatsapp: (message?: string) =>
-    `https://wa.me/${CONTACT.whatsappNumber}${
-      message ? `?text=${encodeURIComponent(message)}` : ''
-    }`,
+  // Desktop -> WhatsApp Web (opens the chat + text directly, skips the
+  // "Open app / Continue" interstitial). Mobile -> wa.me (opens the app).
+  whatsapp: (message?: string) => {
+    const text = message ? `&text=${encodeURIComponent(message)}` : ''
+    if (isMobileDevice()) {
+      return `https://wa.me/${CONTACT.whatsappNumber}${
+        message ? `?text=${encodeURIComponent(message)}` : ''
+      }`
+    }
+    return `https://web.whatsapp.com/send?phone=${CONTACT.whatsappNumber}${text}`
+  },
 
   instagram: () => `https://instagram.com/${CONTACT.instagramHandle}`,
 

@@ -27,7 +27,7 @@ export function LogoMark({ compact = false }: LogoMarkProps) {
     <Link
       ref={wrapRef}
       to="/"
-      className="group relative inline-flex items-center"
+      className="group relative inline-flex flex-col items-start justify-center"
       aria-label="ARQO Design Collective — Home"
       data-cursor="hover"
     >
@@ -40,8 +40,22 @@ export function LogoMark({ compact = false }: LogoMarkProps) {
             ? 'h-8 w-auto object-contain sm:h-9'
             : 'h-10 w-auto object-contain sm:h-11'
         }
+        style={{
+          imageRendering: 'auto',
+          WebkitBackfaceVisibility: 'hidden',
+          backfaceVisibility: 'hidden',
+        }}
         draggable={false}
+        decoding="async"
       />
+      <span
+        className={[
+          'mt-1 max-w-[11rem] whitespace-nowrap font-normal tracking-[0.16em] text-[rgb(var(--text))]',
+          compact ? 'text-[8px] sm:text-[9px]' : 'text-[9px] sm:text-[10px]',
+        ].join(' ')}
+      >
+        ARQO DESIGN COLLECTIVE
+      </span>
     </Link>
   )
 }

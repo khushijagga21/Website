@@ -1,14 +1,15 @@
 import { Link } from 'react-router-dom'
+import { FiMapPin } from 'react-icons/fi'
 import { useScrollReveal } from '../../../hooks/useScrollReveal'
 import { useMagnetic } from '../../../hooks/useMagnetic'
-import { contactLinks } from '../../../config/contact'
+import { CONTACT, contactLinks } from '../../../config/contact'
 
 export function HomeContact() {
   const ref = useScrollReveal<HTMLElement>({ stagger: 0.1 })
   const ctaRef = useMagnetic<HTMLAnchorElement>({ strength: 0.2, scale: 1.04 })
 
   return (
-    <section ref={ref} className="mx-auto max-w-6xl px-6 py-28 pb-40 md:py-40 md:pb-52">
+    <section ref={ref} data-nav-section="contact" className="mx-auto max-w-6xl px-6 py-28 pb-40 md:py-40 md:pb-52">
       <div className="section-divider mb-20" />
 
       <div
@@ -33,6 +34,17 @@ export function HomeContact() {
             <br />
             <span className="italic text-[rgb(var(--accent))]">next space.</span>
           </h2>
+
+          <a
+            href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(CONTACT.location)}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            data-cursor="hover"
+            className="mt-5 inline-flex items-center gap-2 text-[13px] tracking-[0.08em] text-[rgb(var(--muted))] transition-colors hover:text-[rgb(var(--text))]"
+          >
+            <FiMapPin className="text-[rgb(var(--accent))]" />
+            {CONTACT.location}
+          </a>
 
           <div className="mt-8 flex flex-col items-center justify-center gap-5 sm:flex-row sm:gap-6">
             <a

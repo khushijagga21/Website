@@ -1,11 +1,9 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { ThemeProvider } from './components/theme/ThemeProvider'
 import { SmoothScroll } from './components/motion/SmoothScroll'
-import { CustomCursor } from './components/ui/CustomCursor'
 import { AnimatedBackground } from './components/visual/AnimatedBackground'
 import { Navbar } from './components/nav/Navbar'
 import { ScrollToTop } from './components/motion/ScrollToTop'
-import { ScrollRouteNavigator } from './components/motion/ScrollRouteNavigator'
 import { Home } from './pages/Home'
 import { About } from './pages/About'
 import { Services } from './pages/Services'
@@ -20,7 +18,6 @@ function App() {
         <AnimatedBackground />
         <Navbar />
         <ScrollToTop />
-        <ScrollRouteNavigator />
         <main className="relative">
           <Routes>
             <Route path="/" element={<Home />} />
@@ -30,7 +27,6 @@ function App() {
             <Route path="/contact" element={<Contact />} />
           </Routes>
         </main>
-        <CustomCursor />
       </BrowserRouter>
     </ThemeProvider>
   )

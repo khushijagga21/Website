@@ -1,16 +1,11 @@
 import { Link } from 'react-router-dom'
 import { useScrollReveal } from '../../../hooks/useScrollReveal'
 import { useTilt3D } from '../../../hooks/useTilt3D'
-
-const SERVICES = [
-  { num: '01', title: 'Residential', desc: 'Bespoke homes shaped by lifestyle and landscape.', tint: 'var(--terracotta)' },
-  { num: '02', title: 'Commercial', desc: 'Workspaces that elevate brand through spatial clarity.', tint: 'var(--steel)' },
-  { num: '03', title: 'Interior', desc: 'Holistic interiors—furniture, light, and material as one.', tint: 'var(--sage)' },
-  { num: '04', title: 'Consultation', desc: 'Expert guidance from concept to completion.', tint: 'var(--gold)' },
-]
+import { SERVICES } from '../../../config/services'
 
 function ServiceCard({ service }: { service: (typeof SERVICES)[number] }) {
   const tiltRef = useTilt3D<HTMLDivElement>({ max: 12, scale: 1.04 })
+  const Icon = service.icon
 
   return (
     <div data-reveal style={{ perspective: '1000px' }}>
@@ -22,18 +17,25 @@ function ServiceCard({ service }: { service: (typeof SERVICES)[number] }) {
           boxShadow: '0 0 0 1px rgb(var(--border)), 0 28px 70px rgb(var(--shadow))',
         }}
       >
-        {/* hover tint */}
         <div
           className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full opacity-0 blur-3xl transition-opacity duration-700 group-hover:opacity-100"
           style={{ background: `radial-gradient(circle, rgb(${service.tint} / 0.4), transparent 70%)` }}
         />
 
-        <span
-          className="font-[var(--font-display)] text-4xl font-normal text-[rgb(var(--text)/0.1)]"
-          style={{ transform: 'translateZ(40px)' }}
-        >
-          {service.num}
-        </span>
+        <div className="flex items-start justify-between gap-3" style={{ transform: 'translateZ(40px)' }}>
+          <span className="font-[var(--font-display)] text-4xl font-normal text-[rgb(var(--text)/0.1)]">
+            {service.num}
+          </span>
+          <span
+            className="grid h-10 w-10 place-items-center rounded-xl border border-[rgb(var(--border))] text-lg"
+            style={{
+              color: `rgb(${service.tint})`,
+              background: `rgb(${service.tint} / 0.1)`,
+            }}
+          >
+            <Icon />
+          </span>
+        </div>
 
         <h3
           className="mt-5 font-[var(--font-display)] text-xl font-normal md:text-2xl"
@@ -45,7 +47,7 @@ function ServiceCard({ service }: { service: (typeof SERVICES)[number] }) {
           className="mt-3 text-sm font-light leading-[1.75] text-[rgb(var(--muted))]"
           style={{ transform: 'translateZ(20px)' }}
         >
-          {service.desc}
+          {service.description}
         </p>
 
         <div
@@ -56,8 +58,6 @@ function ServiceCard({ service }: { service: (typeof SERVICES)[number] }) {
             transform: 'translateZ(50px)',
           }}
         />
-
-        <div data-glare className="pointer-events-none absolute inset-0 opacity-0" />
       </div>
     </div>
   )
@@ -67,7 +67,7 @@ export function HomeServices() {
   const ref = useScrollReveal<HTMLElement>({ stagger: 0.1, variant: 'scale' })
 
   return (
-    <section ref={ref} className="mx-auto max-w-7xl px-6 py-24 md:py-36">
+    <section ref={ref} data-nav-section="services" className="mx-auto max-w-7xl px-6 py-24 md:py-36">
       <div className="section-divider mb-20" />
 
       <div data-reveal className="mb-16">

@@ -1,92 +1,80 @@
-import { Link } from 'react-router-dom'
 import { useScrollReveal } from '../hooks/useScrollReveal'
-import { AnimatedCard } from '../components/pages/AnimatedCard'
-import { useMagnetic } from '../hooks/useMagnetic'
-
-const SERVICES = [
-  {
-    tag: 'Residential',
-    title: 'Private Homes',
-    description:
-      'Bespoke residences designed around lifestyle, light, and landscape—with luxury finishes and timeless form.',
-  },
-  {
-    tag: 'Commercial',
-    title: 'Workspaces',
-    description:
-      'Offices and retail environments that elevate brand identity through spatial clarity and premium materials.',
-  },
-  {
-    tag: 'Interior',
-    title: 'Interior Architecture',
-    description:
-      'Holistic interior design—furniture, lighting, and material palettes crafted as one cohesive experience.',
-  },
-  {
-    tag: 'Consulting',
-    title: 'Design Consultation',
-    description:
-      'Expert guidance on feasibility, concept development, and design direction for your next project.',
-  },
-]
-
-const STEPS = ['Discover', 'Design', 'Deliver']
+import { SERVICES } from '../config/services'
 
 export function Services() {
-  const sectionRef = useScrollReveal<HTMLElement>({ stagger: 0.1 })
-  const stepsRef = useScrollReveal<HTMLDivElement>({ stagger: 0.12 })
-  const ctaRef = useMagnetic<HTMLAnchorElement>({ strength: 0.18, scale: 1.03 })
+  const heroRef = useScrollReveal<HTMLElement>({ stagger: 0.08, variant: 'fade-up' })
+  const gridRef = useScrollReveal<HTMLElement>({ stagger: 0.08, variant: 'fade-up' })
 
   return (
     <>
-      <section ref={sectionRef} className="mx-auto max-w-6xl px-6 pb-16 pt-28 md:pt-32">
-        <div className="section-divider mb-16" />
-        <div className="grid gap-4 sm:grid-cols-2">
-          {SERVICES.map((service) => (
-            <AnimatedCard key={service.title} {...service} />
-          ))}
-        </div>
+      <section ref={heroRef} className="mx-auto max-w-6xl px-6 pb-10 pt-28 md:pb-14 md:pt-32">
+        <p data-reveal className="text-[11px] tracking-[0.32em] text-[rgb(var(--muted))]">
+          WHAT WE DO
+        </p>
+        <h1
+          data-reveal
+          className="mt-4 font-[var(--font-display)] text-[clamp(2.2rem,5vw,3.5rem)] font-normal tracking-[-0.02em]"
+        >
+          Our Services
+        </h1>
+        <div
+          data-reveal
+          className="mt-5 h-px w-16 bg-[linear-gradient(90deg,rgb(var(--accent)),transparent)]"
+        />
       </section>
 
-      <section ref={stepsRef} className="mx-auto max-w-6xl px-6 pb-32">
-        <div
-          className="rounded-3xl border border-[rgb(var(--border))] bg-[rgb(var(--glass))] p-8 backdrop-blur-xl md:p-12"
-          style={{ boxShadow: '0 0 0 1px rgb(var(--border)), 0 32px 80px rgb(var(--shadow))' }}
-        >
-          <p data-reveal className="text-[11px] tracking-[0.32em] text-[rgb(var(--muted))]">
-            HOW WE WORK
-          </p>
-          <h2
-            data-reveal
-            className="mt-4 font-[var(--font-display)] text-[var(--text-h2)] font-normal tracking-[-0.01em]"
-          >
-            Simple process. Exceptional results.
-          </h2>
+      <section ref={gridRef} className="mx-auto max-w-7xl px-6 pb-28 md:pb-36">
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          {SERVICES.map((service) => {
+            const Icon = service.icon
+            return (
+              <article
+                key={service.num}
+                data-reveal
+                className="group relative overflow-hidden rounded-[26px] border border-[rgb(var(--border))] bg-[rgb(var(--glass))] p-8 backdrop-blur-xl transition-transform duration-500 hover:-translate-y-1.5 md:p-10"
+                style={{
+                  boxShadow: '0 0 0 1px rgb(var(--border)), 0 28px 70px rgb(var(--shadow))',
+                }}
+              >
+                <div
+                  className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full opacity-0 blur-3xl transition-opacity duration-700 group-hover:opacity-100"
+                  style={{
+                    background: `radial-gradient(circle, rgb(${service.tint} / 0.4), transparent 70%)`,
+                  }}
+                />
 
-          <div className="mt-10 grid gap-8 md:grid-cols-3">
-            {STEPS.map((step, i) => (
-              <div key={step} data-reveal>
-                <span className="font-[var(--font-display)] text-4xl font-normal text-[rgb(var(--accent)/0.35)]">
-                  0{i + 1}
-                </span>
-                <h3 className="mt-3 font-[var(--font-display)] text-lg font-normal">{step}</h3>
-                <div className="mt-4 h-px w-12 bg-[linear-gradient(90deg,rgb(var(--accent)),transparent)]" />
-              </div>
-            ))}
-          </div>
-        </div>
+                <div className="relative flex items-start justify-between gap-3">
+                  <span className="font-[var(--font-display)] text-4xl font-normal text-[rgb(var(--text)/0.1)]">
+                    {service.num}
+                  </span>
+                  <span
+                    className="grid h-11 w-11 place-items-center rounded-xl border border-[rgb(var(--border))] text-xl"
+                    style={{
+                      color: `rgb(${service.tint})`,
+                      background: `rgb(${service.tint} / 0.1)`,
+                    }}
+                  >
+                    <Icon />
+                  </span>
+                </div>
 
-        <div data-reveal className="mt-16 text-center">
-          <Link
-            ref={ctaRef}
-            to="/contact"
-            data-cursor="hover"
-            className="group relative inline-flex items-center justify-center overflow-hidden rounded-full border border-[rgb(var(--border))] bg-[rgb(var(--glass))] px-8 py-3.5 text-sm tracking-[0.18em] backdrop-blur-xl"
-            style={{ boxShadow: '0 18px 50px rgb(var(--shadow))' }}
-          >
-            <span className="relative z-10">Get in Touch</span>
-            <span className="absolute inset-0 -translate-x-[120%] bg-[linear-gradient(90deg,transparent,rgb(var(--accent)/0.15),transparent)] transition-transform duration-700 group-hover:translate-x-[120%]" />
-          </Link>
+                <h2 className="relative mt-5 font-[var(--font-display)] text-xl font-normal md:text-2xl">
+                  {service.title}
+                </h2>
+                <p className="relative mt-3 text-sm font-light leading-[1.75] text-[rgb(var(--muted))]">
+                  {service.description}
+                </p>
+
+                <div
+                  className="relative mt-6 h-1 w-10 rounded-full transition-all duration-500 group-hover:w-16"
+                  style={{
+                    background: `rgb(${service.tint})`,
+                    boxShadow: `0 0 14px rgb(${service.tint} / 0.6)`,
+                  }}
+                />
+              </article>
+            )
+          })}
         </div>
       </section>
     </>

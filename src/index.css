@@ -105,7 +105,6 @@ body {
   background: rgb(var(--bg));
   color: rgb(var(--text));
   overflow-x: hidden;
-  cursor: none; /* custom cursor */
   /* Softens residual UI color shifts during theme tween */
   transition: background-color 700ms var(--ease-soft), color 700ms var(--ease-soft);
 }
@@ -171,11 +170,4 @@ body {
   height: 1px;
   background: linear-gradient(90deg, transparent, rgb(var(--accent) / 0.35), rgb(var(--glow) / 0.35), transparent);
   opacity: 0.5;
-}
-
-/* Hide cursor on touch devices */
-@media (hover: none) and (pointer: coarse) {
-  body {
-    cursor: auto;
-  }
 }

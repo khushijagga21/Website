@@ -3,7 +3,6 @@ import { FaWhatsapp, FaInstagram } from 'react-icons/fa'
 import { FiMail, FiArrowUpRight, FiMapPin } from 'react-icons/fi'
 import { useScrollReveal } from '../hooks/useScrollReveal'
 import { useMagnetic } from '../hooks/useMagnetic'
-import { SimplePageHero } from '../components/pages/SimplePageHero'
 import { CONTACT, contactLinks } from '../config/contact'
 
 function formatPhoneE164(e164: string) {
@@ -43,22 +42,21 @@ const CHANNELS = [
     color: 'var(--steel)',
     href: contactLinks.email('Project Inquiry — ARQO'),
   },
+  {
+    key: 'location',
+    tag: 'Visit',
+    title: 'Location',
+    value: CONTACT.location,
+    icon: FiMapPin,
+    color: 'var(--gold)',
+    href: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(CONTACT.location)}`,
+  },
 ] as const
-
-const LOCATION = {
-  key: 'location',
-  tag: 'Visit',
-  title: 'Location',
-  value: CONTACT.location,
-  icon: FiMapPin,
-  color: 'var(--gold)',
-  href: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(CONTACT.location)}`,
-} as const
 
 function ChannelCard({
   channel,
 }: {
-  channel: (typeof CHANNELS)[number] | typeof LOCATION
+  channel: (typeof CHANNELS)[number]
 }) {
   const Icon = channel.icon
   return (
@@ -68,9 +66,9 @@ function ChannelCard({
       rel="noopener noreferrer"
       data-reveal
       data-cursor="hover"
-      className="group relative flex items-center gap-5 overflow-hidden rounded-3xl border border-[rgb(var(--border))] bg-[rgb(var(--glass))] p-7 backdrop-blur-xl transition-all duration-500 [transition-timing-function:var(--ease-out)] hover:-translate-y-1.5"
+      className="group relative flex items-center gap-3 overflow-hidden rounded-xl border border-[rgb(var(--border))] bg-[rgb(var(--glass))] px-3.5 py-2 backdrop-blur-xl transition-all duration-500 [transition-timing-function:var(--ease-out)] hover:-translate-y-1"
       style={{
-        boxShadow: '0 0 0 1px rgb(var(--border)), 0 24px 60px rgb(var(--shadow))',
+        boxShadow: '0 0 0 1px rgb(var(--border)), 0 16px 40px rgb(var(--shadow))',
       }}
     >
       <div className="absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100">
@@ -83,7 +81,7 @@ function ChannelCard({
       </div>
 
       <span
-        className="relative grid h-16 w-16 shrink-0 place-items-center rounded-2xl border border-[rgb(var(--border))] text-2xl"
+        className="relative grid h-9 w-9 shrink-0 place-items-center rounded-lg border border-[rgb(var(--border))] text-base"
         style={{
           color: `rgb(${channel.color})`,
           background: `rgb(${channel.color} / 0.08)`,
@@ -92,19 +90,19 @@ function ChannelCard({
         <Icon />
       </span>
 
-      <div className="relative flex-1">
-        <span className="text-[11px] tracking-[0.24em] text-[rgb(var(--muted))]">
+      <div className="relative min-w-0 flex-1 leading-tight">
+        <span className="text-[9px] tracking-[0.22em] text-[rgb(var(--muted))]">
           {channel.tag.toUpperCase()}
         </span>
-        <h3 className="mt-1 font-[var(--font-display)] text-[1.15rem] font-normal tracking-[-0.01em]">
+        <h3 className="font-[var(--font-display)] text-[0.95rem] font-normal tracking-[-0.01em]">
           {channel.title}
         </h3>
-        <p className="mt-0.5 text-[14px] leading-snug text-[rgb(var(--muted))]">
+        <p className="text-[12px] leading-snug text-[rgb(var(--muted))]">
           {channel.value}
         </p>
       </div>
 
-      <FiArrowUpRight className="relative text-xl text-[rgb(var(--muted))] transition-all duration-500 group-hover:-translate-y-1 group-hover:translate-x-1 group-hover:text-[rgb(var(--text))]" />
+      <FiArrowUpRight className="relative shrink-0 text-base text-[rgb(var(--muted))] transition-all duration-500 group-hover:-translate-y-1 group-hover:translate-x-1 group-hover:text-[rgb(var(--text))]" />
     </a>
   )
 }
@@ -112,7 +110,6 @@ function ChannelCard({
 export function Contact() {
   const channelsRef = useScrollReveal<HTMLDivElement>({ stagger: 0.1 })
   const formRef = useScrollReveal<HTMLDivElement>({ stagger: 0.08, variant: 'fade-up' })
-  const metaRef = useScrollReveal<HTMLDivElement>({ stagger: 0.08, variant: 'scale' })
   const waBtnRef = useMagnetic<HTMLButtonElement>({ strength: 0.18, scale: 1.03 })
   const mailBtnRef = useMagnetic<HTMLButtonElement>({ strength: 0.18, scale: 1.03 })
 
@@ -146,16 +143,7 @@ export function Contact() {
     'w-full rounded-2xl border border-[rgb(var(--border))] bg-[rgb(var(--surface)/0.5)] px-5 py-3.5 text-sm text-[rgb(var(--text))] outline-none transition-all duration-300 placeholder:text-[rgb(var(--muted))] focus:border-[rgb(var(--accent)/0.5)] focus:bg-[rgb(var(--surface)/0.8)]'
 
   return (
-    <>
-      <SimplePageHero
-        label="GET IN TOUCH"
-        title="Let's Talk"
-        description="Reach us directly on WhatsApp, Instagram, or email—or send a message below and we'll get back to you shortly."
-      />
-
-      <section className="mx-auto max-w-6xl px-6 pb-20 md:pb-24">
-        <div className="section-divider mb-12" />
-
+    <section className="mx-auto max-w-6xl px-6 pb-20 pt-28 md:pb-24 md:pt-32">
         <div
           className="relative overflow-hidden rounded-[36px] border border-[rgb(var(--border))] bg-[rgb(var(--glass))] backdrop-blur-xl"
           style={{
@@ -187,13 +175,10 @@ export function Contact() {
                 WhatsApp, Instagram, or email—pick what’s easiest.
               </p>
 
-              <div className="mt-6 flex flex-col gap-4">
+              <div className="mt-5 flex flex-col gap-2">
                 {CHANNELS.map((channel) => (
                   <ChannelCard key={channel.key} channel={channel} />
                 ))}
-                <div ref={metaRef} className="mt-1">
-                  <ChannelCard channel={LOCATION} />
-                </div>
               </div>
             </div>
 
@@ -272,6 +257,5 @@ export function Contact() {
           </div>
         </div>
       </section>
-    </>
   )
 }

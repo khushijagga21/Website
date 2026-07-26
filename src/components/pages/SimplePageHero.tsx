@@ -4,7 +4,7 @@ import { SectionLabel } from '../ui/SectionLabel'
 
 type SimplePageHeroProps = {
   label: string
-  title: string
+  title?: string
   description: string
 }
 
@@ -21,13 +21,15 @@ export function SimplePageHero({ label, title, description }: SimplePageHeroProp
         <SectionLabel>{label}</SectionLabel>
       </div>
 
-      <h1 className="mt-6 font-[var(--font-display)] text-[var(--text-h1)] font-normal leading-[1.08] tracking-[-0.01em]">
-        <SplitText text={title} word />
-      </h1>
+      {title ? (
+        <h1 className="mt-6 font-[var(--font-display)] text-[var(--text-h1)] font-normal leading-[1.08] tracking-[-0.01em]">
+          <SplitText text={title} word />
+        </h1>
+      ) : null}
 
       <div
         data-hero-extra
-        className="mt-6 h-px max-w-xs origin-left bg-[linear-gradient(90deg,rgb(var(--accent)),rgb(var(--glow)),transparent)]"
+        className={`${title ? 'mt-6' : 'mt-5'} h-px max-w-xs origin-left bg-[linear-gradient(90deg,rgb(var(--accent)),rgb(var(--glow)),transparent)]`}
       />
 
       <p

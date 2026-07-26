@@ -7,17 +7,31 @@ import { ThemeToggle } from '../ui/ThemeToggle'
 import { useMagnetic } from '../../hooks/useMagnetic'
 
 const NAV = [
-  { label: 'Home', to: '/' },
-  { label: 'About', to: '/about' },
-  { label: 'Services', to: '/services' },
-  { label: 'Projects', to: '/projects' },
-  { label: 'Contact', to: '/contact' },
-]
+  { label: 'Home', to: '/', section: 'home' },
+  { label: 'About', to: '/about', section: 'about' },
+  { label: 'Services', to: '/services', section: 'services' },
+  { label: 'Projects', to: '/projects', section: 'projects' },
+  { label: 'Contact', to: '/contact', section: 'contact' },
+] as const
 
-function NavLink({ label, to }: { label: string; to: string }) {
+const SECTION_TO_PATH: Record<string, string> = {
+  home: '/',
+  about: '/about',
+  services: '/services',
+  projects: '/projects',
+  contact: '/contact',
+}
+
+function NavLink({
+  label,
+  to,
+  active,
+}: {
+  label: string
+  to: string
+  active: boolean
+}) {
   const ref = useMagnetic<HTMLAnchorElement>({ strength: 0.14, scale: 1.02 })
-  const location = useLocation()
-  const isActive = location.pathname === to
 
   return (
     <Link
@@ -25,17 +39,18 @@ function NavLink({ label, to }: { label: string; to: string }) {
       to={to}
       className={[
         'relative px-3 py-2 text-[10px] tracking-[0.2em] transition-all duration-300 md:text-[11px]',
-        isActive
+        active
           ? 'text-[rgb(var(--text))]'
           : 'text-[rgb(var(--muted))] hover:text-[rgb(var(--text))]',
       ].join(' ')}
       data-cursor="hover"
     >
       {label.toUpperCase()}
-      {isActive && (
+      {active && (
         <motion.span
           layoutId="nav-active"
           className="absolute -bottom-0.5 left-3 right-3 h-px bg-[rgb(var(--accent))]"
+          transition={{ type: 'spring', stiffness: 380, damping: 32 }}
         />
       )}
     </Link>
@@ -45,11 +60,62 @@ function NavLink({ label, to }: { label: string; to: string }) {
 export function Navbar() {
   const [open, setOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
+  const [activePath, setActivePath] = useState('/')
   const location = useLocation()
   const isHome = location.pathname === '/'
 
   useEffect(() => {
     setOpen(false)
+  }, [location.pathname])
+
+  // Sync active highlight with route; on Home, scroll-spy overrides below
+  useEffect(() => {
+    setActivePath(location.pathname)
+  }, [location.pathname])
+
+  // Scroll-spy: highlight nav as home sections enter view
+  useEffect(() => {
+    if (location.pathname !== '/') return
+
+    const sections = Array.from(
+      document.querySelectorAll<HTMLElement>('[data-nav-section]'),
+    )
+    if (!sections.length) return
+
+    const ratios = new Map<string, number>()
+
+    const pickActive = () => {
+      let best = 'home'
+      let bestRatio = -1
+      for (const [id, ratio] of ratios) {
+        if (ratio > bestRatio) {
+          bestRatio = ratio
+          best = id
+        }
+      }
+      if (bestRatio >= 0) {
+        setActivePath(SECTION_TO_PATH[best] ?? '/')
+      }
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          const id = entry.target.getAttribute('data-nav-section')
+          if (!id) continue
+          ratios.set(id, entry.isIntersecting ? entry.intersectionRatio : 0)
+        }
+        pickActive()
+      },
+      {
+        // Prefer the section sitting in the upper-middle of the viewport
+        rootMargin: '-18% 0px -52% 0px',
+        threshold: [0, 0.15, 0.35, 0.55, 0.75, 1],
+      },
+    )
+
+    sections.forEach((el) => observer.observe(el))
+    return () => observer.disconnect()
   }, [location.pathname])
 
   useEffect(() => {
@@ -85,7 +151,12 @@ export function Navbar() {
 
           <nav className="hidden items-center gap-1 md:flex">
             {NAV.map((n) => (
-              <NavLink key={n.label} label={n.label} to={n.to} />
+              <NavLink
+                key={n.label}
+                label={n.label}
+                to={n.to}
+                active={activePath === n.to}
+              />
             ))}
             <div className="ml-4 border-l border-[rgb(var(--border))] pl-4">
               <ThemeToggle />
@@ -136,7 +207,10 @@ export function Navbar() {
                   <Link
                     to={n.to}
                     onClick={() => setOpen(false)}
-                    className="block border-b border-[rgb(var(--border))] py-4 font-[var(--font-display)] text-xl font-normal"
+                    className={[
+                      'block border-b border-[rgb(var(--border))] py-4 font-[var(--font-display)] text-xl font-normal',
+                      activePath === n.to ? 'text-[rgb(var(--accent))]' : '',
+                    ].join(' ')}
                     data-cursor="hover"
                   >
                     {n.label}

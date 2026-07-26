@@ -33,7 +33,9 @@ function HeroCallout({ label, to }: { label: string; to: string }) {
 
 export function HomeHero() {
   const sectionRef = useRef<HTMLElement | null>(null)
+  const logoWrapRef = useRef<HTMLDivElement | null>(null)
   const logoRef = useRef<HTMLImageElement | null>(null)
+  const nameRef = useRef<HTMLParagraphElement | null>(null)
   const lineRef = useRef<HTMLDivElement | null>(null)
   const scrollRef = useRef<HTMLDivElement | null>(null)
 
@@ -43,61 +45,57 @@ export function HomeHero() {
 
     if (prefersReducedMotion()) {
       gsap.set(
-        [logoRef.current, lineRef.current, scrollRef.current, '[data-hero-btn]'],
-        { opacity: 1, y: 0, scaleX: 1, clipPath: 'inset(0% 0% 0% 0%)' },
+        [logoWrapRef.current, nameRef.current, lineRef.current, scrollRef.current, '[data-hero-btn]'],
+        { opacity: 1, y: 0, scaleX: 1, scale: 1 },
       )
       return
     }
 
     const buttons = el.querySelectorAll('[data-hero-btn]')
 
-    gsap.set(logoRef.current, {
-      filter: 'blur(14px)',
-      scale: 0.6,
-      y: 26,
+    // Animate wrapper (not the image) so logo stays crisp — no blur filters on the PNG
+    gsap.set(logoWrapRef.current, {
+      scale: 0.92,
+      y: 18,
       opacity: 0,
-      rotateX: 12,
     })
+    gsap.set(nameRef.current, { opacity: 0, y: 14 })
     gsap.set(lineRef.current, { scaleX: 0, opacity: 0 })
     gsap.set(buttons, { y: 22, opacity: 0 })
     gsap.set(scrollRef.current, { opacity: 0, y: 10 })
 
     const tl = gsap.timeline({ delay: 0.15, defaults: { ease: 'power3.out' } })
-    tl.to(
-        logoRef.current,
-        {
-          filter: 'blur(0px)',
-          scale: 1,
-          y: 0,
-          opacity: 0.92,
-          rotateX: 0,
-          duration: 1.6,
-          ease: 'power4.out',
-        },
-        '-=0.35',
-      )
-      .to(lineRef.current, { scaleX: 1, opacity: 1, duration: 1.1 }, '-=0.9')
-      .to(buttons, { y: 0, opacity: 1, duration: 0.85, stagger: 0.08 }, '-=0.6')
+    tl.to(logoWrapRef.current, {
+      scale: 1,
+      y: 0,
+      opacity: 1,
+      duration: 1.25,
+      ease: 'power4.out',
+    })
+      .to(nameRef.current, { opacity: 1, y: 0, duration: 0.9 }, '-=0.7')
+      .to(lineRef.current, { scaleX: 1, opacity: 1, duration: 1.1 }, '-=0.65')
+      .to(buttons, { y: 0, opacity: 1, duration: 0.85, stagger: 0.08 }, '-=0.5')
       .to(scrollRef.current, { opacity: 1, y: 0, duration: 0.8 }, '-=0.3')
       .add(() => {
-        // Gentle continuous float once it has settled.
-        gsap.to(logoRef.current, {
-          y: -10,
-          duration: 3,
+        // Soft float on wrapper only (no 3D rotate on the bitmap)
+        gsap.to(logoWrapRef.current, {
+          y: -8,
+          duration: 3.2,
           ease: 'sine.inOut',
           repeat: -1,
           yoyo: true,
         })
       })
 
-    // Subtle mouse parallax on the logo (premium, alive feel).
+    // Very subtle parallax — small enough that edges stay sharp
     const onMove = (e: PointerEvent) => {
       const nx = (e.clientX / window.innerWidth - 0.5) * 2
       const ny = (e.clientY / window.innerHeight - 0.5) * 2
-      gsap.to(logoRef.current, {
-        rotateY: nx * 6,
-        rotateX: -ny * 5,
-        duration: 0.9,
+      gsap.to(logoWrapRef.current, {
+        x: nx * 6,
+        rotateY: nx * 2.5,
+        rotateX: -ny * 2,
+        duration: 1,
         ease: 'power2.out',
         overwrite: 'auto',
       })
@@ -107,13 +105,14 @@ export function HomeHero() {
     return () => {
       tl.kill()
       window.removeEventListener('pointermove', onMove)
-      gsap.killTweensOf(logoRef.current)
+      gsap.killTweensOf(logoWrapRef.current)
     }
   }, [])
 
   return (
     <section
       ref={sectionRef}
+      data-nav-section="home"
       className="relative flex min-h-[100svh] flex-col items-center justify-center px-6"
     >
       <div className="pointer-events-none absolute inset-0">
@@ -124,25 +123,38 @@ export function HomeHero() {
       </div>
 
       <div
-        className="relative z-10"
-        style={{ perspective: '900px' }}
+        ref={logoWrapRef}
+        className="relative z-10 flex flex-col items-center"
+        style={{ perspective: '1200px', transformStyle: 'preserve-3d' }}
       >
         <img
           ref={logoRef}
           src={arqoLogo}
           alt="ARQO Design Collective"
-          className="h-auto w-[min(68vw,420px)] object-contain will-change-transform"
+          className="h-auto w-[min(72vw,480px)] object-contain"
           style={{
-            filter: 'drop-shadow(0 16px 40px rgba(0, 0, 0, 0.16))',
-            transformStyle: 'preserve-3d',
+            // Crisp bitmap rendering — avoid blurry filters on the logo itself
+            imageRendering: 'auto',
+            WebkitBackfaceVisibility: 'hidden',
+            backfaceVisibility: 'hidden',
+            filter: 'drop-shadow(0 12px 28px rgba(0, 0, 0, 0.08))',
           }}
           draggable={false}
+          decoding="async"
         />
+        <p
+          ref={nameRef}
+          className="mt-5 flex items-center gap-3 text-[11px] tracking-[0.36em] text-[rgb(var(--text))] md:mt-6 md:text-xs"
+        >
+          <span className="h-px w-8 bg-[rgb(var(--text)/0.35)] md:w-10" aria-hidden />
+          ARQO DESIGN COLLECTIVE
+          <span className="h-px w-8 bg-[rgb(var(--text)/0.35)] md:w-10" aria-hidden />
+        </p>
       </div>
 
       <div
         ref={lineRef}
-        className="relative z-10 mt-10 h-px w-[min(70vw,480px)] origin-center bg-[linear-gradient(90deg,transparent,rgb(var(--accent)/0.65),rgb(var(--glow)/0.65),rgb(var(--accent2)/0.65),transparent)]"
+        className="relative z-10 mt-8 h-px w-[min(70vw,480px)] origin-center bg-[linear-gradient(90deg,transparent,rgb(var(--accent)/0.65),rgb(var(--glow)/0.65),rgb(var(--accent2)/0.65),transparent)] md:mt-10"
       />
 
       <nav className="relative z-10 mt-9 flex flex-wrap items-center justify-center gap-4 md:gap-6">
