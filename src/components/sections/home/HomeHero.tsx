@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import gsap from 'gsap'
-import arqoLogo from '../../../assets/arqo-logo-cropped.png'
+import { BrandLogo } from '../../brand/BrandLogo'
 import { useMagnetic } from '../../../hooks/useMagnetic'
 import { prefersReducedMotion } from '../../../utils/dom'
 
@@ -34,7 +34,6 @@ function HeroCallout({ label, to }: { label: string; to: string }) {
 export function HomeHero() {
   const sectionRef = useRef<HTMLElement | null>(null)
   const logoWrapRef = useRef<HTMLDivElement | null>(null)
-  const logoRef = useRef<HTMLImageElement | null>(null)
   const nameRef = useRef<HTMLParagraphElement | null>(null)
   const lineRef = useRef<HTMLDivElement | null>(null)
   const scrollRef = useRef<HTMLDivElement | null>(null)
@@ -87,14 +86,11 @@ export function HomeHero() {
         })
       })
 
-    // Very subtle parallax — small enough that edges stay sharp
+    // Very subtle parallax — X only so the float tween and edges stay clean
     const onMove = (e: PointerEvent) => {
       const nx = (e.clientX / window.innerWidth - 0.5) * 2
-      const ny = (e.clientY / window.innerHeight - 0.5) * 2
       gsap.to(logoWrapRef.current, {
-        x: nx * 6,
-        rotateY: nx * 2.5,
-        rotateX: -ny * 2,
+        x: nx * 5,
         duration: 1,
         ease: 'power2.out',
         overwrite: 'auto',
@@ -125,22 +121,10 @@ export function HomeHero() {
       <div
         ref={logoWrapRef}
         className="relative z-10 flex flex-col items-center"
-        style={{ perspective: '1200px', transformStyle: 'preserve-3d' }}
       >
-        <img
-          ref={logoRef}
-          src={arqoLogo}
-          alt="ARQO Design Collective"
-          className="h-auto w-[min(72vw,480px)] object-contain"
-          style={{
-            // Crisp bitmap rendering — avoid blurry filters on the logo itself
-            imageRendering: 'auto',
-            WebkitBackfaceVisibility: 'hidden',
-            backfaceVisibility: 'hidden',
-            filter: 'drop-shadow(0 12px 28px rgba(0, 0, 0, 0.08))',
-          }}
-          draggable={false}
-          decoding="async"
+        <BrandLogo
+          hero
+          className="h-auto w-[min(78vw,520px)] object-contain"
         />
         <p
           ref={nameRef}

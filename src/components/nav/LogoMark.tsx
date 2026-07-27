@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import gsap from 'gsap'
 import { useMagnetic } from '../../hooks/useMagnetic'
-import arqoLogo from '../../assets/arqo-logo-cropped.png'
+import { BrandLogo } from '../brand/BrandLogo'
 
 type LogoMarkProps = {
   compact?: boolean
@@ -10,14 +10,14 @@ type LogoMarkProps = {
 
 export function LogoMark({ compact = false }: LogoMarkProps) {
   const wrapRef = useMagnetic<HTMLAnchorElement>({ strength: 0.08, scale: 1.02 })
-  const imgRef = useRef<HTMLImageElement | null>(null)
+  const imgWrapRef = useRef<HTMLSpanElement | null>(null)
 
   useEffect(() => {
-    const img = imgRef.current
-    if (!img || compact) return
+    const el = imgWrapRef.current
+    if (!el || compact) return
 
     gsap.fromTo(
-      img,
+      el,
       { opacity: 0, scale: 0.96 },
       { opacity: 1, scale: 1, duration: 0.8, ease: 'power3.out', delay: 0.2 },
     )
@@ -31,23 +31,15 @@ export function LogoMark({ compact = false }: LogoMarkProps) {
       aria-label="ARQO Design Collective — Home"
       data-cursor="hover"
     >
-      <img
-        ref={imgRef}
-        src={arqoLogo}
-        alt="ARQO Design Collective"
-        className={
-          compact
-            ? 'h-8 w-auto object-contain sm:h-9'
-            : 'h-10 w-auto object-contain sm:h-11'
-        }
-        style={{
-          imageRendering: 'auto',
-          WebkitBackfaceVisibility: 'hidden',
-          backfaceVisibility: 'hidden',
-        }}
-        draggable={false}
-        decoding="async"
-      />
+      <span ref={imgWrapRef} className="inline-flex">
+        <BrandLogo
+          className={
+            compact
+              ? 'h-8 w-auto object-contain sm:h-9'
+              : 'h-10 w-auto object-contain sm:h-11'
+          }
+        />
+      </span>
       <span
         className={[
           'mt-1 max-w-[11rem] whitespace-nowrap font-normal tracking-[0.16em] text-[rgb(var(--text))]',
